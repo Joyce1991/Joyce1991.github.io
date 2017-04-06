@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="深入理解JVM," />
 
 
 
@@ -87,12 +87,61 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="6.1　概述&amp;emsp;&amp;emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，">
+<meta name="keywords" content="深入理解JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6. 类文件结构">
+<meta property="og:url" content="http://yoursite.com/2017/04/06/6-类文件结构/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="6.1　概述&amp;emsp;&amp;emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05173512_rHaC.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06154542_yXkn.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06154750_bxf4.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06154841_NjqZ.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06154935_gBOP.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06155102_mBLM.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162057_DGRN.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162146_2Sy3.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162307_B9x2.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162534_9C7X.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162616_JmNc.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162717_AKEm.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162801_OPEN.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06162858_oRxX.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163036_pP1W.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163115_ATP4.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163216_kRui.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163306_dCSQ.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163416_q2wP.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163454_8ke6.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163537_wyy6.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163653_a8z7.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163727_bpk9.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06163818_jdP7.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06165326_ZKMW.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06165530_D5GQ.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06165841_2J7X.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170210_X6A4.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170301_eKQG.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170352_r1yu.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170429_Clzc.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170527_kSjT.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170714_MYOT.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06170753_lr26.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171005_hDlc.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171051_cuMW.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171149_nVtE.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171248_XBCf.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171341_brv8.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171440_PL7M.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171512_2e9K.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171750_QF0i.png">
+<meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171823_YEK4.png">
+<meta property="og:updated_time" content="2017-04-06T09:35:07.871Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="6. 类文件结构">
+<meta name="twitter:description" content="6.1　概述&amp;emsp;&amp;emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，">
+<meta name="twitter:image" content="https://static.oschina.net/uploads/img/201704/05173512_rHaC.png">
 
 
 
@@ -120,13 +169,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/04/06/6-类文件结构/"/>
 
 
 
 
 
-  <title> Hexo </title>
+  <title> 6. 类文件结构 | Hexo </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="">
@@ -151,9 +200,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,9 +283,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -268,10 +315,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/04/06/6-类文件结构/" itemprop="url">
-                  6. 类文件结构
-                </a>
+                6. 类文件结构
               
             
           </h1>
@@ -322,9 +366,7 @@
       
 
       
-        
-          
-            <h1 id="6-1-概述"><a href="#6-1-概述" class="headerlink" title="6.1　概述"></a>6.1　概述</h1><p>&emsp;&emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，越来越多的程序语言选择了与操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。</p>
+        <h1 id="6-1-概述"><a href="#6-1-概述" class="headerlink" title="6.1　概述"></a>6.1　概述</h1><p>&emsp;&emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，越来越多的程序语言选择了与操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。</p>
 <h1 id="6-2-无关性的基石"><a href="#6-2-无关性的基石" class="headerlink" title="6.2　无关性的基石"></a>6.2　无关性的基石</h1><p>&emsp;&emsp;如果计算机的CPU指令集只有x86一种，操作系统也只有Windows一种，那也许Java语言就不会出现。Java在刚刚诞生之时曾经提出过一个非常著名的宣传口号：“一次编写，到处运行（Write Once,Run Anywhere）”，这句话充分表达了软件开发人员对冲破平台界限的渴求。在无时无刻不充满竞争的IT领域，不可能只有Wintel[1]存在，我们也不希望只有Wintel存在，各种不同的硬件体系结构和不同的操作系统肯定会长期并存发展。“与平台无关”的理想最终实现在操作系统的应用层上：Sun公司以及其他虚拟机提供商发布了许多可以运行在各种不同平台上的虚拟机，这些虚拟机都可以载入和执行同一种平台无关的字节码，从而实现了程序的“一次编写，到处运行”。</p>
 <p>&emsp;&emsp;各种不同平台的虚拟机与所有平台都统一使用的程序存储格式——字节码（ByteCode）是构成平台无关性的基石，但本节标题中刻意省略了“平台”二字，那是因为笔者注意到虚拟机的另外一种中立特性——语言无关性正越来越被开发者所重视。到目前为止，或许大部分程序员都还认为Java虚拟机执行Java程序是一件理所当然和天经地义的事情。但在Java发展之初，设计者就曾经考虑过并实现了让其他语言运行在Java虚拟机之上的可能性，他们在发布规范文档的时候，也刻意把Java的规范拆分成了Java语言规范《The Java Language Specification》及Java虚拟机规范《The Java Virtual Machine Specification》。并且在1997年发布的第一版Java虚拟机规范中就曾经承诺过：”In the future,we will consider bounded extensions to the Java virtual machine to provide better support for other languages”（在未来，我们会对Java虚拟机进行适当的扩展，以便更好地支持其他语言运行于JVM之上），当Java虚拟机发展到JDK 1.7～1.8的时候，JVM设计者通过JSR-292基本兑现了这个承诺。</p>
 <p>&emsp;&emsp;时至今日，商业机构和开源机构已经在Java语言之外发展出一大批在Java虚拟机之上运行的语言，如Clojure、Groovy、JRuby、Jython、Scala等。使用过这些语言的开发者可能还不是非常多，但是听说过的人肯定已经不少，随着时间的推移，谁能保证日后Java虚拟机在语言无关性上的优势不会赶上甚至超越它在平台无关性上的优势呢？</p>
@@ -625,171 +667,72 @@
 <h1 id="6-7-本章小结"><a href="#6-7-本章小结" class="headerlink" title="6.7　本章小结"></a>6.7　本章小结</h1><p>&emsp;&emsp;Class文件是Java虚拟机执行引擎的数据入口，也是Java技术体系的基础构成之一。了解Class文件的结构对后面进一步了解虚拟机执行引擎有很重要的意义。</p>
 <p>&emsp;&emsp;本章详细讲解了Class文件结构中的各个组成部分，以及每个部分的定义、数据结构和使用方法。通过代码清单6-1的Java代码与它的Class文件样例，以实战的方式演示了Class的数据是如何存储和访问的。从第7章开始，我们将以动态的、运行时的角度去看看字节码流在虚拟机执行引擎中是怎样被解释执行的。</p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <div>
+      
+        
+
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/06/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/06/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-06T11:04:51+08:00">
-                2017-04-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/深入理解JVM/" rel="tag"># 深入理解JVM</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
         
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
       
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/06/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -797,6 +740,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -816,8 +763,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Übersicht
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -870,6 +826,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#6-1-概述"><span class="nav-number">1.</span> <span class="nav-text">6.1　概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-2-无关性的基石"><span class="nav-number">2.</span> <span class="nav-text">6.2　无关性的基石</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-3-Class类文件的结构"><span class="nav-number">3.</span> <span class="nav-text">6.3　Class类文件的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-1-魔数与Class文件的版本"><span class="nav-number">3.1.</span> <span class="nav-text">6.3.1　魔数与Class文件的版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-2-常量池"><span class="nav-number">3.2.</span> <span class="nav-text">6.3.2　常量池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-3-访问标志"><span class="nav-number">3.3.</span> <span class="nav-text">6.3.3　访问标志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-4-类索引、父类索引与接口索引集合"><span class="nav-number">3.4.</span> <span class="nav-text">6.3.4　类索引、父类索引与接口索引集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-5-字段表集合"><span class="nav-number">3.5.</span> <span class="nav-text">6.3.5　字段表集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-6-方法表集合"><span class="nav-number">3.6.</span> <span class="nav-text">6.3.6　方法表集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-7-属性表集合"><span class="nav-number">3.7.</span> <span class="nav-text">6.3.7　属性表集合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-4-字节码指令简介"><span class="nav-number">4.</span> <span class="nav-text">6.4　字节码指令简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-1-字节码与数据类型"><span class="nav-number">4.1.</span> <span class="nav-text">6.4.1　字节码与数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-2-加载和存储指令"><span class="nav-number">4.2.</span> <span class="nav-text">6.4.2　加载和存储指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-3-运算指令"><span class="nav-number">4.3.</span> <span class="nav-text">6.4.3　运算指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-4-类型转换指令"><span class="nav-number">4.4.</span> <span class="nav-text">6.4.4　类型转换指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-5-对象创建与访问指令"><span class="nav-number">4.5.</span> <span class="nav-text">6.4.5　对象创建与访问指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-6-操作数栈管理指令"><span class="nav-number">4.6.</span> <span class="nav-text">6.4.6　操作数栈管理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-7-控制转移指令"><span class="nav-number">4.7.</span> <span class="nav-text">6.4.7　控制转移指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-8-方法调用和返回指令"><span class="nav-number">4.8.</span> <span class="nav-text">6.4.8　方法调用和返回指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-9-异常处理指令"><span class="nav-number">4.9.</span> <span class="nav-text">6.4.9　异常处理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-10-同步指令"><span class="nav-number">4.10.</span> <span class="nav-text">6.4.10　同步指令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-5-公有设计和私有实现"><span class="nav-number">5.</span> <span class="nav-text">6.5　公有设计和私有实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-6-Class文件结构的发展"><span class="nav-number">6.</span> <span class="nav-text">6.6　Class文件结构的发展</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-7-本章小结"><span class="nav-number">7.</span> <span class="nav-text">6.7　本章小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -977,6 +949,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
