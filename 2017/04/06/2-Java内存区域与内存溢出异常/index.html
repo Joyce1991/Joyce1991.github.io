@@ -102,7 +102,7 @@
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05102041_r0k5.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05102204_84A5.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05102429_GXZN.png">
-<meta property="og:updated_time" content="2017-04-06T09:41:43.617Z">
+<meta property="og:updated_time" content="2017-04-06T09:46:35.375Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2. Java内存区域与内存溢出异常">
 <meta name="twitter:description" content="2.1　概述&amp;emsp;&amp;emsp;对于从事C、C++程序开发的开发人员来说，在内存管理领域，他们既是拥有最高权力的“皇帝”又是从事最基础工作的“劳动人民”——既拥有每一个对象的“所有权”，又担负着每一个对象生命开始到终结的维护责任。 &amp;emsp;&amp;emsp;对于Java程序员来说，在虚拟机自动内存管理机制的帮助下，不再需要为每一个new操作去写配对的delete/free代码，不容易出现内存泄漏">
@@ -334,6 +334,7 @@
         <h2 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1　概述"></a>2.1　概述</h2><p>&emsp;&emsp;对于从事C、C++程序开发的开发人员来说，在内存管理领域，他们既是拥有最高权力的“皇帝”又是从事最基础工作的“劳动人民”——既拥有每一个对象的“所有权”，又担负着每一个对象生命开始到终结的维护责任。</p>
 <p>&emsp;&emsp;对于Java程序员来说，在虚拟机自动内存管理机制的帮助下，不再需要为每一个new操作去写配对的delete/free代码，不容易出现内存泄漏和内存溢出问题，由虚拟机管理内存这一切看起来都很美好。不过，也正是因为Java程序员把内存控制的权力交给了Java虚拟机，一旦出现内存泄漏和溢出方面的问题，如果不了解虚拟机是怎样使用内存的，那么排查错误将会成为一项异常艰难的工作。</p>
 <p>&emsp;&emsp;本章是第二部分的第1章，笔者将从概念上介绍Java虚拟机内存的各个区域，讲解这些区域的作用、服务对象以及其中可能产生的问题，这是翻越虚拟机内存管理这堵围墙的第一步。</p>
+<a id="more"></a>
 <h2 id="2-2-运行时数据区域"><a href="#2-2-运行时数据区域" class="headerlink" title="2.2　运行时数据区域"></a>2.2　运行时数据区域</h2><p>&emsp;&emsp;Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自的用途，以及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在，有些区域则依赖用户线程的启动和结束而建立和销毁。根据《Java虚拟机规范（Java SE 7版）》的规定，Java虚拟机所管理的内存将会包括以下几个运行时数据区域，如图2-1所示。</p>
 <p><img src="https://static.oschina.net/uploads/img/201703/30183148_xkqk.png" alt="输入图片说明" title="在这里输入图片标题"></p>
 <h3 id="2-2-1-程序计数器"><a href="#2-2-1-程序计数器" class="headerlink" title="2.2.1　程序计数器"></a>2.2.1　程序计数器</h3><p>&emsp;&emsp;程序计数器（Program Counter Register）是一块较小的内存空间，它可以看作是 <strong>当前线程所执行的字节码的行号指示器</strong> 。在虚拟机的概念模型里（仅是概念模型，各种虚拟机可能会通过一些更高效的方式去实现），字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</p>

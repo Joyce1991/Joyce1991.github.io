@@ -87,13 +87,13 @@
 
 
 
-<meta name="description" content="3.1　概述&amp;emsp;&amp;emsp;说起垃圾收集（Garbage Collection,GC），大部分人都把这项技术当做Java语言的伴生产物。事实上，GC的历史比Java久远，1960年诞生于MIT的Lisp是第一门真正使用内存动态分配和垃圾收集技术的语言。当Lisp还在胚胎时期时，人们就在思考GC需要完成的3件事情：  哪些内存需要回收？ 什么时候回收？ 如何回收？  &amp;emsp;&amp;emsp;">
+<meta name="description" content="3.1　概述&amp;emsp;&amp;emsp;说起垃圾收集（Garbage Collection,GC），大部分人都把这项技术当做Java语言的伴生产物。事实上，GC的历史比Java久远，1960年诞生于MIT的Lisp是第一门真正使用内存动态分配和垃圾收集技术的语言。当Lisp还在胚胎时期时，人们就在思考GC需要完成的3件事情：  哪些内存需要回收？ 什么时候回收？ 如何回收？">
 <meta name="keywords" content="深入理解JVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="3. 垃圾收集器与内存分配策略">
 <meta property="og:url" content="http://yoursite.com/2017/04/06/3-垃圾收集器与内存分配策略/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="3.1　概述&amp;emsp;&amp;emsp;说起垃圾收集（Garbage Collection,GC），大部分人都把这项技术当做Java语言的伴生产物。事实上，GC的历史比Java久远，1960年诞生于MIT的Lisp是第一门真正使用内存动态分配和垃圾收集技术的语言。当Lisp还在胚胎时期时，人们就在思考GC需要完成的3件事情：  哪些内存需要回收？ 什么时候回收？ 如何回收？  &amp;emsp;&amp;emsp;">
+<meta property="og:description" content="3.1　概述&amp;emsp;&amp;emsp;说起垃圾收集（Garbage Collection,GC），大部分人都把这项技术当做Java语言的伴生产物。事实上，GC的历史比Java久远，1960年诞生于MIT的Lisp是第一门真正使用内存动态分配和垃圾收集技术的语言。当Lisp还在胚胎时期时，人们就在思考GC需要完成的3件事情：  哪些内存需要回收？ 什么时候回收？ 如何回收？">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05145222_v3K7.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05145726_3I3d.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05145821_K8e0.png">
@@ -109,10 +109,10 @@
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05151452_Q1vN.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05151728_8LFi.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/05151758_I3YN.png">
-<meta property="og:updated_time" content="2017-04-06T09:40:51.496Z">
+<meta property="og:updated_time" content="2017-04-06T09:46:48.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="3. 垃圾收集器与内存分配策略">
-<meta name="twitter:description" content="3.1　概述&amp;emsp;&amp;emsp;说起垃圾收集（Garbage Collection,GC），大部分人都把这项技术当做Java语言的伴生产物。事实上，GC的历史比Java久远，1960年诞生于MIT的Lisp是第一门真正使用内存动态分配和垃圾收集技术的语言。当Lisp还在胚胎时期时，人们就在思考GC需要完成的3件事情：  哪些内存需要回收？ 什么时候回收？ 如何回收？  &amp;emsp;&amp;emsp;">
+<meta name="twitter:description" content="3.1　概述&amp;emsp;&amp;emsp;说起垃圾收集（Garbage Collection,GC），大部分人都把这项技术当做Java语言的伴生产物。事实上，GC的历史比Java久远，1960年诞生于MIT的Lisp是第一门真正使用内存动态分配和垃圾收集技术的语言。当Lisp还在胚胎时期时，人们就在思考GC需要完成的3件事情：  哪些内存需要回收？ 什么时候回收？ 如何回收？">
 <meta name="twitter:image" content="https://static.oschina.net/uploads/img/201704/05145222_v3K7.png">
 
 
@@ -344,6 +344,7 @@
 <li>什么时候回收？</li>
 <li>如何回收？</li>
 </ul>
+<a id="more"></a>
 <p>&emsp;&emsp;经过半个多世纪的发展，目前内存的动态分配与内存回收技术已经相当成熟，一切看起来都进入了“自动化”时代，那为什么我们还要去了解GC和内存分配呢？答案很简单：当需要排查各种内存溢出、内存泄漏问题时，当垃圾收集成为系统达到更高并发量的瓶颈时，我们就需要对这些“自动化”的技术实施必要的监控和调节。</p>
 <p>&emsp;&emsp;把时间从半个多世纪以前拨回到现在，回到我们熟悉的Java语言。第2章介绍了Java内存运行时区域的各个部分，其中程序计数器、虚拟机栈、本地方法栈3个区域随线程而生，随线程而灭；栈中的栈帧随着方法的进入和退出而有条不紊地执行着出栈和入栈操作。每一个栈帧中分配多少内存基本上是在类结构确定下来时就已知的（尽管在运行期会由JIT编译器进行一些优化，但在本章基于概念模型的讨论中，大体上可以认为是编译期可知的），因此这几个区域的内存分配和回收都具备确定性，在这几个区域内就不需要过多考虑回收的问题，因为方法结束或者线程结束时，内存自然就跟随着回收了。而Java堆和方法区则不一样，一个接口中的多个实现类需要的内存可能不一样，一个方法中的多个分支需要的内存也可能不一样，我们只有在程序处于运行期间时才能知道会创建哪些对象，这部分内存的分配和回收都是动态的，垃圾收集器所关注的是这部分内存，本章后续讨论中的“内存”分配与回收也仅指这一部分内存。</p>
 <h1 id="3-2-对象已死吗"><a href="#3-2-对象已死吗" class="headerlink" title="3.2　对象已死吗"></a>3.2　对象已死吗</h1><p>&emsp;&emsp;在堆里面存放着Java世界中几乎所有的对象实例，垃圾收集器在对堆进行回收前，第一件事情就是要确定这些对象之中哪些还“存活”着，哪些已经“死去”（即不可能再被任何途径使用的对象）。</p>

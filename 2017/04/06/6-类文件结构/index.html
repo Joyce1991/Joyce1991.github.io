@@ -137,7 +137,7 @@
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171512_2e9K.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171750_QF0i.png">
 <meta property="og:image" content="https://static.oschina.net/uploads/img/201704/06171823_YEK4.png">
-<meta property="og:updated_time" content="2017-04-06T09:35:07.871Z">
+<meta property="og:updated_time" content="2017-04-06T09:46:56.836Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="6. 类文件结构">
 <meta name="twitter:description" content="6.1　概述&amp;emsp;&amp;emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，">
@@ -367,6 +367,7 @@
 
       
         <h1 id="6-1-概述"><a href="#6-1-概述" class="headerlink" title="6.1　概述"></a>6.1　概述</h1><p>&emsp;&emsp;记得在第一节计算机程序课上我的老师就讲过：“计算机只认识0和1，所以我们写的程序需要经编译器翻译成由0和1构成的二进制格式才能由计算机执行”。10多年时间过去了，今天的计算机仍然只能识别0和1，但由于最近10年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，越来越多的程序语言选择了与操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。</p>
+<a id="more"></a>
 <h1 id="6-2-无关性的基石"><a href="#6-2-无关性的基石" class="headerlink" title="6.2　无关性的基石"></a>6.2　无关性的基石</h1><p>&emsp;&emsp;如果计算机的CPU指令集只有x86一种，操作系统也只有Windows一种，那也许Java语言就不会出现。Java在刚刚诞生之时曾经提出过一个非常著名的宣传口号：“一次编写，到处运行（Write Once,Run Anywhere）”，这句话充分表达了软件开发人员对冲破平台界限的渴求。在无时无刻不充满竞争的IT领域，不可能只有Wintel[1]存在，我们也不希望只有Wintel存在，各种不同的硬件体系结构和不同的操作系统肯定会长期并存发展。“与平台无关”的理想最终实现在操作系统的应用层上：Sun公司以及其他虚拟机提供商发布了许多可以运行在各种不同平台上的虚拟机，这些虚拟机都可以载入和执行同一种平台无关的字节码，从而实现了程序的“一次编写，到处运行”。</p>
 <p>&emsp;&emsp;各种不同平台的虚拟机与所有平台都统一使用的程序存储格式——字节码（ByteCode）是构成平台无关性的基石，但本节标题中刻意省略了“平台”二字，那是因为笔者注意到虚拟机的另外一种中立特性——语言无关性正越来越被开发者所重视。到目前为止，或许大部分程序员都还认为Java虚拟机执行Java程序是一件理所当然和天经地义的事情。但在Java发展之初，设计者就曾经考虑过并实现了让其他语言运行在Java虚拟机之上的可能性，他们在发布规范文档的时候，也刻意把Java的规范拆分成了Java语言规范《The Java Language Specification》及Java虚拟机规范《The Java Virtual Machine Specification》。并且在1997年发布的第一版Java虚拟机规范中就曾经承诺过：”In the future,we will consider bounded extensions to the Java virtual machine to provide better support for other languages”（在未来，我们会对Java虚拟机进行适当的扩展，以便更好地支持其他语言运行于JVM之上），当Java虚拟机发展到JDK 1.7～1.8的时候，JVM设计者通过JSR-292基本兑现了这个承诺。</p>
 <p>&emsp;&emsp;时至今日，商业机构和开源机构已经在Java语言之外发展出一大批在Java虚拟机之上运行的语言，如Clojure、Groovy、JRuby、Jython、Scala等。使用过这些语言的开发者可能还不是非常多，但是听说过的人肯定已经不少，随着时间的推移，谁能保证日后Java虚拟机在语言无关性上的优势不会赶上甚至超越它在平台无关性上的优势呢？</p>
